@@ -2,20 +2,21 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from utils import draw_corners, resize, corresp_points
+from utils import draw_corners, resize, corresp_points, know_template
 from algebra import find_homography, ransac
 
 def main():
-    vid_path = "InitialDataset\InitialDataset\ManyArucos.mp4"
+    # vid_path = "InitialDataset\InitialDataset\ManyArucos.mp4"
+    vid_path = "InitialDataset\InitialDataset\FewArucos-Viewpoint2.mp4"
     vid = cv2.VideoCapture(vid_path)
-    template_many = cv2.imread(r"InitialDataset\InitialDataset\templates\template1_manyArucos.png")
-    template_few = cv2.imread(r"InitialDataset\InitialDataset\templates\template2_fewArucos.png")
-    wt, ht = template_many.shape[:2]
+    ret, image = vid.read()
+    template = know_template(image)
+    wt, ht = template.shape[:2]
     arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_7X7_50)
     arucoParams = cv2.aruco.DetectorParameters_create()
-    (corners, ids, rejected) = cv2.aruco.detectMarkers(template_many, arucoDict,
+    (corners, ids, rejected) = cv2.aruco.detectMarkers(template, arucoDict,
         parameters=arucoParams)
-    tmp_prt = draw_corners(corners, ids, template_many)
+    tmp_prt = draw_corners(corners, ids, template)
     tmp_prt = resize(tmp_prt, 4)
     dic_temp = dict(zip(ids.flatten(), corners))
     # cv2.imshow('template', tmp_prt)

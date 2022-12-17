@@ -1,6 +1,19 @@
 import cv2
 import numpy as np
 
+def know_template(image):
+    template_many = cv2.imread(r"InitialDataset\InitialDataset\templates\template1_manyArucos.png")
+    template_few = cv2.imread(r"InitialDataset\InitialDataset\templates\template2_fewArucos.png")
+    arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_7X7_50)
+    arucoParams = cv2.aruco.DetectorParameters_create()
+    (corners, ids, rejected) = cv2.aruco.detectMarkers(image, arucoDict,
+        parameters=arucoParams)
+    if len(ids.flatten())>4:
+        return template_many
+    else:
+        return template_few
+
+# TODO : func check template
 def resize(img, r):
     height, width = img.shape[:2]
     img = cv2.resize(img, (width//r, height//r), interpolation=cv2.INTER_CUBIC)
